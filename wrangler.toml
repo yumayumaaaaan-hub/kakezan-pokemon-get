@@ -1,0 +1,7 @@
+name = "kakezan-pokemon-get"
+compatibility_date = "2024-09-01"
+
+# 静的ファイル（HTML/CSS/JS）をそのまま公開
+[assets]
+directory = "."
+not_found_handling = "single-page-application"

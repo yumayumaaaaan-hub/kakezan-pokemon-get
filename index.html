@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>掛け算でポケモンゲットだぜ！</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="rotom-wrap">
+    <div class="rotom-dex" role="application" aria-label="ロトム図鑑 九九チャレンジ">
+      <div class="rotom-character">
+        <div class="rotom-character__horn" aria-hidden="true"></div>
+
+        <div class="rotom-character__body">
+          <div class="rotom-character__sensor rotom-character__sensor--left" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="rotom-character__sensor rotom-character__sensor--right" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+
+          <div class="rotom-character__arm rotom-character__arm--left" aria-hidden="true"></div>
+          <div class="rotom-character__arm rotom-character__arm--right" aria-hidden="true"></div>
+
+          <div class="rotom-character__face" aria-hidden="true">
+            <div class="rotom-character__visor">
+              <span class="rotom-character__eye rotom-character__eye--left"></span>
+              <span class="rotom-character__eye rotom-character__eye--right"></span>
+            </div>
+            <div class="rotom-character__mouth">
+              <span class="rotom-character__mouth-inner"></span>
+            </div>
+          </div>
+
+          <div class="rotom-character__screen-frame">
+            <div class="rotom-dex__screen">
+              <div class="rotom-dex__scanlines" aria-hidden="true"></div>
+              <div class="rotom-dex__screen-inner">
+                <div class="rotom-dex__toolbar">
+                  <div class="rotom-dex__toolbar-left">
+                    <button id="btn-header-logo" class="app-header__logo-btn" type="button" aria-label="ホームにもどる">
+                      <img class="app-header__logo" src="assets/title-logo.png" alt="">
+                    </button>
+                    <button id="btn-pokedex-back" class="btn-back btn-back--small hidden" type="button" aria-label="もどる">← もどる</button>
+                    <p id="rotom-status" class="rotom-dex__status visually-hidden" aria-live="polite">準備OK</p>
+                  </div>
+                  <button id="btn-sound-toggle" class="sound-toggle" type="button" aria-pressed="true" aria-label="サウンド ON">🔊</button>
+                </div>
+                <p id="pc-keyboard-hint" class="pc-hint hidden" aria-live="polite"></p>
+                <div class="app">
+              <!-- ホーム -->
+              <section id="screen-home" class="screen screen--active" aria-label="ホーム">
+                <div class="screen-panel stats-card">
+                  <div class="stats-card__head">
+                    <span class="stats-card__label">ゲット数</span>
+                    <p class="stats-card__count">
+                      <span id="home-caught-count">0</span>
+                      <span class="stats-card__total">/ 251</span>
+                    </p>
+                  </div>
+                  <div class="stats-card__bar" aria-hidden="true">
+                    <div id="home-progress-bar" class="stats-card__bar-fill"></div>
+                  </div>
+                </div>
+
+                <div id="legendary-notice" class="screen-panel legendary-notice hidden">
+                  <span class="legendary-notice__icon">✨</span>
+                  <p>伝説のポケモンが あらわれた！<br>次は <strong>10もん</strong> チャレンジ！</p>
+                </div>
+
+                <div class="home-actions">
+                  <button id="btn-start" class="btn btn--primary btn--large" type="button">チャレンジ開始！</button>
+                  <button id="btn-pokedex" class="btn btn--secondary btn--large" type="button">ずかんを見る</button>
+                </div>
+
+                <section id="home-mistake-section" class="screen-panel mistake-section mistake-section--compact" aria-labelledby="home-mistake-title">
+                  <h2 id="home-mistake-title" class="mistake-section__title">さいきんの にがて</h2>
+                  <div id="home-mistake-list" class="mistake-list"></div>
+                  <p id="home-mistake-tip" class="mistake-section__tip"></p>
+                </section>
+
+                <p class="home-tip">5もん → ゲット ／ 21ひき → 伝説！</p>
+
+                <div class="home-parent-link">
+                  <button id="btn-parent-report" class="btn btn--parent-report" type="button">親向けレポートを見る</button>
+                </div>
+
+                <div class="home-reset">
+                  <button id="btn-clear-history" class="btn btn--reset" type="button">記録をリセット</button>
+                </div>
+              </section>
+
+              <!-- 問題（画面の中身＝問題エリア） -->
+              <section id="screen-quiz" class="screen" aria-label="問題" hidden>
+                <div class="quiz-screen">
+                  <div class="quiz-screen__hud">
+                    <div class="quiz-header__top">
+                      <p id="quiz-mode-label" class="quiz-header__mode">通常チャレンジ</p>
+                      <p id="quiz-progress" class="quiz-header__progress">せいかい 0 / 5</p>
+                    </div>
+                    <div class="quiz-header__bar" aria-hidden="true">
+                      <div id="quiz-progress-bar" class="quiz-header__bar-fill quiz-header__bar-fill--monster"></div>
+                    </div>
+                  </div>
+
+                  <div class="quiz-screen__main">
+                    <div class="quiz-screen__question-wrap">
+                      <p id="quiz-question" class="quiz-question">3 × 4 = ?</p>
+                      <p id="quiz-kuku-reading" class="quiz-kuku-reading" aria-hidden="true"></p>
+                    </div>
+
+                    <div class="quiz-screen__action">
+                      <form id="quiz-form" class="quiz-form">
+                        <input id="quiz-answer" class="quiz-input" type="number" inputmode="numeric" autocomplete="off" placeholder="?" required autofocus aria-label="こたえ（数字）">
+                        <button id="btn-submit-answer" class="btn btn--primary btn--large" type="submit">こたえる！</button>
+                        <p class="quiz-form__enter-hint pc-only">Enter キー でも OK</p>
+                      </form>
+
+                      <div id="quiz-feedback" class="quiz-feedback hidden" aria-live="polite">
+                        <p id="quiz-feedback-text" class="quiz-feedback__text"></p>
+                        <p id="quiz-feedback-answer" class="quiz-feedback__answer"></p>
+                        <button id="btn-next-question" class="btn btn--secondary btn--large" type="button">次のもんだい</button>
+                        <p class="quiz-feedback__enter-hint pc-only">Enter キー で つぎへ</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 結果 -->
+              <section id="screen-summary" class="screen" aria-label="結果" hidden>
+                <div class="screen-panel summary-card">
+                  <p class="summary-card__label">けっか</p>
+                  <p id="summary-score" class="summary-card__score">5問中 4問 正解！</p>
+                  <p id="summary-message" class="summary-card__message"></p>
+                  <div id="summary-stars" class="summary-stars" aria-hidden="true"></div>
+                  <div class="summary-ball-info">
+                    <p id="summary-ball" class="summary-ball-info__ball"></p>
+                    <p id="summary-rate" class="summary-ball-info__rate"></p>
+                  </div>
+                </div>
+                <button id="btn-go-catch" class="btn btn--primary btn--large btn--pulse" type="button">ポケモンゲット チャンスへ！</button>
+                <p class="summary-enter-hint pc-only">Enter キー で ゲット チャンス！</p>
+              </section>
+
+              <!-- ゲット演出 -->
+              <section id="screen-catch" class="screen" aria-label="ゲット演出" hidden>
+                <div id="catch-scene" class="catch-scene">
+                  <div id="catch-phase-throw" class="catch-phase">
+                    <p id="catch-label" class="catch-label">ポケモンを つかまえよう！</p>
+                    <p id="catch-ball-label" class="catch-ball-label">今回は モンスターボール！</p>
+                    <div id="ball-stage" class="ball-stage">
+                      <img id="catch-target-pokemon" class="catch-target-pokemon" src="" alt="" aria-hidden="true">
+                      <div id="pokeball" class="pokeball pokeball--monster" aria-hidden="true">
+                        <div class="pokeball__top"></div>
+                        <div class="pokeball__center"></div>
+                        <div class="pokeball__bottom"></div>
+                      </div>
+                      <div id="catch-flash" class="catch-flash hidden" aria-hidden="true"></div>
+                    </div>
+                  </div>
+
+                  <div id="catch-result" class="catch-result catch-phase hidden">
+                    <div class="catch-celebration" aria-hidden="true">
+                      <span class="catch-spark">✨</span>
+                      <span class="catch-spark">⭐</span>
+                      <span class="catch-spark">✨</span>
+                    </div>
+                    <div class="catch-image-wrap">
+                      <img id="catch-image" class="catch-image" src="" alt="">
+                    </div>
+                    <p id="catch-title" class="catch-title">やった！ ゲット！</p>
+                    <p id="catch-name" class="catch-name"></p>
+                  </div>
+
+                  <div id="catch-fail" class="catch-fail catch-phase hidden">
+                    <p class="catch-fail__title">あと少しだった！</p>
+                    <p class="catch-fail__text">もう一回 チャレンジすると<br>ゲットできる かも！</p>
+                    <p class="catch-fail__encourage">今日の がんばりは<br>ちゃんと 記録されたよ ✨</p>
+                  </div>
+                </div>
+                <div id="catch-actions" class="catch-actions hidden">
+                  <button id="btn-catch-pokedex" class="btn btn--primary btn--large" type="button">ずかんを見る</button>
+                  <p id="catch-enter-hint" class="catch-enter-hint pc-only hidden">Enter キー でも OK</p>
+                </div>
+              </section>
+
+              <!-- 図鑑 -->
+              <section id="screen-pokedex" class="screen" aria-label="ずかん" hidden>
+                <div id="pokedex-list-view">
+                  <div class="pokedex-top">
+                    <h2 class="pokedex-header__title">ポケモンずかん</h2>
+                    <p id="pokedex-count" class="pokedex-header__count">0 / 251</p>
+                  </div>
+                  <div class="pokedex-scroll-area">
+                    <div id="pokedex-grid" class="pokedex-grid"></div>
+                  </div>
+                </div>
+
+                <div id="pokedex-footer-actions" class="pokedex-footer-actions hidden">
+                  <button id="btn-pokedex-home" class="btn btn--secondary btn--large" type="button">もどる</button>
+                  <button id="btn-pokedex-retry" class="btn btn--primary btn--large" type="button">もう一度！</button>
+                </div>
+
+                <!-- 図鑑詳細 -->
+                <div id="pokedex-detail-view" class="pokedex-detail hidden" aria-label="ポケモン詳細">
+                  <div class="pokedex-detail__scroll">
+                    <div class="pokedex-detail__hero">
+                      <img id="detail-image" class="pokedex-detail__img" src="" alt="">
+                      <p id="detail-number" class="pokedex-detail__number"></p>
+                      <h2 id="detail-name" class="pokedex-detail__name"></h2>
+                    </div>
+                    <dl class="pokedex-detail__info">
+                      <div class="pokedex-detail__row">
+                        <dt>タイプ</dt>
+                        <dd id="detail-types" class="pokedex-detail__types"></dd>
+                      </div>
+                      <div class="pokedex-detail__row">
+                        <dt>ずかんメモ</dt>
+                        <dd id="detail-description" class="pokedex-detail__desc"></dd>
+                      </div>
+                      <div id="detail-date-row" class="pokedex-detail__row hidden">
+                        <dt>ゲットした日</dt>
+                        <dd id="detail-date" class="pokedex-detail__date"></dd>
+                      </div>
+                      <div id="detail-ball-row" class="pokedex-detail__row hidden">
+                        <dt>ゲット</dt>
+                        <dd id="detail-ball" class="pokedex-detail__ball"></dd>
+                      </div>
+                    </dl>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 親向けレポート -->
+              <section id="screen-parent-report" class="screen" aria-label="親向けレポート" hidden>
+                <div class="parent-report">
+                  <header class="parent-report__header">
+                    <h2 class="parent-report__title">親向けレポート</h2>
+                  </header>
+
+                  <section class="parent-report__card" aria-labelledby="parent-report-overview-title">
+                    <h3 id="parent-report-overview-title" class="parent-report__card-title">レポート概要</h3>
+                    <div id="parent-report-overview" class="parent-report__overview"></div>
+                  </section>
+
+                  <section class="parent-report__card" aria-labelledby="parent-report-dan-title">
+                    <h3 id="parent-report-dan-title" class="parent-report__card-title">段ごとの傾向</h3>
+                    <div id="parent-report-dan-chart" class="parent-report__chart"></div>
+                    <p id="parent-report-focus" class="parent-report__focus"></p>
+                  </section>
+
+                  <details id="parent-report-recent-panel" class="parent-report__card parent-report__details">
+                    <summary class="parent-report__summary">最近つまずいた問題</summary>
+                    <div id="parent-report-recent" class="parent-report__recent"></div>
+                  </details>
+
+                  <section class="parent-report__card" aria-labelledby="parent-report-ranking-title">
+                    <h3 id="parent-report-ranking-title" class="parent-report__card-title">よく間違える問題ランキング</h3>
+                    <ol id="parent-report-ranking" class="parent-report__ranking"></ol>
+                  </section>
+
+                  <section class="parent-report__card parent-report__card--advice" aria-labelledby="parent-report-advice-title">
+                    <h3 id="parent-report-advice-title" class="parent-report__card-title">サポートのヒント</h3>
+                    <ul id="parent-report-advice" class="parent-report__advice"></ul>
+                  </section>
+
+                  <div class="parent-report__actions">
+                    <button id="btn-parent-report-home" class="btn btn--secondary btn--large" type="button">ホームにもどる</button>
+                  </div>
+                </div>
+              </section>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rotom-character__legs" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="pokemon-data.js"></script>
+  <script src="pokemon-data-gen2.js"></script>
+  <script src="kuku-readings.js"></script>
+  <script src="sound.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
