@@ -43,18 +43,45 @@ python -m http.server 8080
 
 ## Cloudflare Pages の設定（任意）
 
-ひらがなプロジェクト（[kids-motor-lab](https://github.com/yumayumaaaaan-hub/kids-motor-lab)）と同じ Cloudflare アカウントを使う場合、GitHub リポジトリに次の2つのシークレットを登録してください。
+このプロジェクトは **HTML/CSS/JS だけ** なので、ビルド（変換作業）は不要です。
 
-1. GitHub で https://github.com/yumayumaaaaan-hub/kakezan-pokemon-get/settings/secrets/actions を開く
-2. **New repository secret** をクリック
-3. 次の2つを追加（値は kids-motor-lab と同じものを使う）
+### 方法A: Cloudflare ダッシュボードで Git 連携（おすすめ）
+
+Cloudflare ダッシュボード → **Workers & Pages** → プロジェクト → **Settings** → **Build**
+
+| 項目 | 設定値 |
+|------|--------|
+| Framework preset | **None** |
+| Build command | **空欄**（何も書かない） |
+| Build output directory | **`.`** または **`/`**（ルート） |
+| Deploy command | **空欄**（推奨） |
+
+**Deploy command が `npx wrangler deploy` のままの場合**  
+ダッシュボードで空欄に直すのが一番確実です。  
+どうしても変更できない場合は、リポジトリの `wrangler.toml` に `[assets]` を入れてあるので、そのまま再デプロイを試してください。
+
+**Deploy command を手で直す場合の例（どちらか）**
+
+- 空欄（ビルド出力 `.` だけ使う）
+- `npx wrangler pages deploy . --project-name=kakezan-pokemon-get`
+
+設定変更後、**Retry deployment** で再デプロイしてください。
+
+### 方法B: GitHub Actions からデプロイ
+
+GitHub リポジトリに次の2つのシークレットを登録します。
+
+1. https://github.com/yumayumaaaaan-hub/kakezan-pokemon-get/settings/secrets/actions を開く
+2. **New repository secret** で以下を追加
 
 | 名前 | 説明 |
 |------|------|
 | `CLOUDFLARE_API_TOKEN` | Cloudflare API トークン |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare アカウント ID |
 
-4. 追加後、GitHub の **Actions** タブから「Deploy to Cloudflare Pages」を **Run workflow** で再実行
+3. GitHub の **Actions** タブ →「Deploy to Cloudflare Pages」→ **Run workflow**
+
+※ 方法Aと方法Bは **どちらか一方** で十分です。両方同時だと二重デプロイになります。
 
 ## 技術メモ
 
